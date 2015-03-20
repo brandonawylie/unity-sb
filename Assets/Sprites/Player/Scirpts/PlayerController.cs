@@ -27,4 +27,11 @@ public class PlayerController : MonoBehaviour {
 
 	}
 
+	void Update () {
+		bool isShoot = animator.GetBool("isShoot");
+		if (Input.GetKey (KeyCode.Space)) {
+
+		}
+	}
+
 }
