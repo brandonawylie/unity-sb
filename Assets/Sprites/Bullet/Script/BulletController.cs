@@ -14,13 +14,17 @@ public class BulletController : MonoBehaviour {
 	void FixedUpdate () {
 		// TODO IsName might now work, if so hash graveyard, and check with dobule equals and nameHash
 		if (animator.GetCurrentAnimatorStateInfo (0).IsName ("Graveyard")) {
-			//Destroy(gameObject);
+			Destroy(gameObject);
+		}
+
+		if (!renderer.isVisible) {
+			Destroy(gameObject);
 		}
 	}
 
 	void OnCollisionEnter2D(Collision2D collision){
-		if (collision.gameObject.tag == "Enemy") {
-			//animator.SetBool("isImpact" ,true);
+		if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Environment") {
+			animator.SetBool("isImpact" ,true);
 		}
 	}
 }
