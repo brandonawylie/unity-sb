@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
+	// TODO add reload bar
+	// TODO make controls more responsive
+	// TODO give hp
+	// TODO make enemy attacks decrement hp
+	// TODO adjust these variables with power ups
 
 	float walkSpeed = 1.0f;
 	float jumpSpeed = 5.0f;
@@ -14,20 +19,15 @@ public class PlayerController : MonoBehaviour {
 	float shootWaitTime = 1;
 	float shootKickback = 2.0f;
 
-	Object bulletPrefab;
-
-
 	protected Animator animator;
 	protected List<GameObject> bullets;
 	// Use this for initialization
 	void Start () {
-
-		bulletPrefab = Resources.Load ("Bullet");
 		bullets = new List<GameObject> ();
 		animator = GetComponent<Animator> ();
 	}
 	
-	// Update is called once per frame
+	// Control physics based stuff like velocity/position
 	void FixedUpdate () {
 		// Update the x according to horizontal input
 		float dx = Input.GetAxisRaw("Horizontal");
@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour {
 
 	}
 
+	// update non-physics stuff like shooting
 	void Update () {
 		bool isShoot = animator.GetBool("isShoot");
 		if (isShoot) animator.SetBool("isShoot", false);
@@ -71,6 +72,7 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	// flip the player's sprite to walk left & right
 	void flip() {
 		isFacingRight = !isFacingRight;
 		
