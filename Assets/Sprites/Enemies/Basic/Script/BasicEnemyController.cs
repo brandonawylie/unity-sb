@@ -2,8 +2,7 @@
 using System.Collections;
 
 public class BasicEnemyController : MonoBehaviour {
-	// TODO make the enemy try to kill the player
-	// TODO correct position after scaling for the death explosion
+	string[] powerupList = {"Powerup_Health", "Powerup_Damage", "Powerup_Reload"};
 
 	float hp = 10.0f;
 	float walkSpeed = 1.0f;
@@ -24,8 +23,16 @@ public class BasicEnemyController : MonoBehaviour {
 		bool isDying = animator.GetBool("isDying");
 		if (hp <= 0 && !isDying) {
 			collider2D.isTrigger = true;
+			//collider.enabled = false;
+			rigidbody2D.gravityScale = 0;
 			animator.SetBool("isDying", true);
+			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + .4f,transform.localPosition.z);
 			transform.localScale = new Vector3(1,1,1);
+
+			string resource = powerupList[Random.Range (0, powerupList.Length)];
+			GameObject go = Instantiate(Resources.Load(resource, typeof(GameObject))) as GameObject;
+			go.transform.position = transform.position;
+			go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y - .1f,go.transform.localPosition.z);
 		}
 
 		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Graveyard")) {

@@ -5,12 +5,8 @@ using System.Collections.Generic;
 public class PlayerController : MonoBehaviour {
 	// TODO add reload bar
 	// TODO make controls more responsive
-	// TODO give hp
-	// TODO make enemy attacks decrement hp
-	// TODO adjust these variables with power ups
 	// TODO fix jumping sfx when stuck underneath platform
-	// TODO invunerable while rolling
-	
+
 	float walkSpeed = 3.0f;
 	float jumpSpeed = 5.0f;
 	float shootSpeed = 3.0f;
@@ -33,7 +29,7 @@ public class PlayerController : MonoBehaviour {
 	protected Animator animator;
 	protected List<GameObject> bullets;
 	
-	protected AudioSource jumpSound, shootSound;
+	protected AudioSource jumpSound, shootSound, hurtSound, powerupSound, rollSound;
 	
 	// Use this for initialization
 	void Start () {
@@ -42,6 +38,9 @@ public class PlayerController : MonoBehaviour {
 		AudioSource[] audioSources = GetComponents<AudioSource>();
 		jumpSound = audioSources[0];
 		shootSound = audioSources[1];
+		hurtSound = audioSources[2];
+		powerupSound = audioSources[3];
+		rollSound = audioSources[4];
 	}
 	
 	// Control physics based stuff like velocity/position
@@ -101,18 +100,21 @@ public class PlayerController : MonoBehaviour {
 		// Rolling
 		bool isRoll = animator.GetBool("isRoll");
 		if (Input.GetButton ("Roll") && !isRoll) {
+			rollSound.Play();
 			animator.SetBool("isRoll", true);
 			rollStartTime = Time.time;
 			lastRollTickTime = rollStartTime;
 			rigidbody2D.AddForce(new Vector2(isFacingRight ? rollSpeed : -rollSpeed, 0), ForceMode2D.Impulse);
-			gameObject.layer = 9;
+			gameObject.layer = 10;
+
+			flashPlayer();
 		}
 		
 		if (isRoll) {
 			float delta = Time.time - rollStartTime;
 
 			if (delta >= rollTime) {
-				gameObject.layer = 8;				
+				gameObject.layer = 9;				
 				animator.SetBool("isRoll", false);
 				transform.rotation = Quaternion.identity;
 			} else {
@@ -122,16 +124,39 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 	}
+
+	IEnumerator flashPlayer() {
+		Color tmp = renderer.material.color;
+		renderer.material.color = Color.white;
+		yield return new WaitForSeconds (.1f);
+		renderer.material.color = tmp;
+	}
 	
 	void OnCollisionEnter2D(Collision2D collision){
 		//print ("collision");
 		if (collision.gameObject.tag == "BasicEnemy") {
-			hp -= 10;
-			print ("hit");
+			BasicEnemyController script = collision.gameObject.GetComponent<BasicEnemyController>();
+			hp -= script.damage;
+			hurtSound.Play ();
+		}
+
+		if (collision.gameObject.tag == "Powerup") {
+			powerupSound.Play ();
+			PowerupController otherScript = collision.gameObject.GetComponent<PowerupController>();
+			string type = otherScript.type;
+			if (type == "Health") {
+				hp = Mathf.Clamp(hp + otherScript.healAmount, hp, maxHP);
+			} else if(type == "Damage") {
+				bulletDamage += otherScript.damageIncrease;
+			} else if(type == "Reload") {
+				reloadTime -= otherScript.reloadReduction;
+			}
+			
+			Destroy(collision.gameObject);
+			
 		}
 	}
-	
-	
+
 	
 	// flip the player's sprite to walk left & right
 	void flip() {
