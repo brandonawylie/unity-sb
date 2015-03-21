@@ -4,6 +4,7 @@ using System.Collections;
 public class BulletController : MonoBehaviour {
 
 	protected Animator animator;
+	public float damage = 10.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -23,14 +24,14 @@ public class BulletController : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D collision){
-		print ("collision");
+		//print ("collision");
 		if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Environment") {
 			animator.SetBool("isImpact" ,true);
 		}
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		print ("collision");
+		//print ("collision");
 
 		if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Environment") {
 			animator.SetBool("isImpact" ,true);

@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour {
 	float jumpSpeed = 5.0f;
 	float shootSpeed = 3.0f;
 
+	float bulletDamage = 10.0f;
+
 	bool isFacingRight = true;
 
 	float lastShootTime = 0;
@@ -61,9 +63,10 @@ public class PlayerController : MonoBehaviour {
 
 			// TODO set the correct position for the bullet to spawn
 			GameObject go = Instantiate(Resources.Load("Bullet", typeof(GameObject))) as GameObject;
+			BulletController goScript = go.GetComponent<BulletController>();
+			goScript.damage = bulletDamage;
 			go.transform.position = transform.position;
 			Vector2 bulletForce = isFacingRight ? Vector2.right * shootSpeed : -Vector2.right * shootSpeed;
-			print(bulletForce);
 			go.rigidbody2D.AddForce(bulletForce, ForceMode2D.Impulse);
 			bullets.Add (go);
 
