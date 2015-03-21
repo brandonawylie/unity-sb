@@ -10,13 +10,22 @@ public class PowerupController : MonoBehaviour {
 
 	float rotationCoeff = .05f;
 
+	AudioSource bounceSound;
+
 	// Use this for initialization
 	void Start () {
-	
+		bounceSound = gameObject.GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		transform.Rotate(0, 10.0f * Time.deltaTime / rotationCoeff, 0);
+	}
+
+	void OnCollisionEnter2D(Collision2D collision){
+		//print ("collision");
+		if (collision.gameObject.layer == 0) {
+			bounceSound.Play();
+		}
 	}
 }
