@@ -9,26 +9,32 @@ public class PlayerController : MonoBehaviour {
 	// TODO make enemy attacks decrement hp
 	// TODO adjust these variables with power ups
 	// TODO fix jumping sfx when stuck underneath platform
-
+	// TODO invunerable while rolling
+	
 	float walkSpeed = 3.0f;
 	float jumpSpeed = 5.0f;
 	float shootSpeed = 3.0f;
-
+	
+	bool isFacingRight = true;
+	
+	float lastShootTime = 0;
+	float rollStartTime = 0;
+	float lastRollTickTime = 0;
+	float rollTime = .5f;
+	float rollSpeed = 4;
+	
+	// Upgradable stats
 	public float hp = 100;
 	public float maxHP = 100;
-
-	float bulletDamage = 10.0f;
-
-	bool isFacingRight = true;
-
-	float lastShootTime = 0;
-	float reloadTime = 1;
-	float shootKickback = 2.0f;
-
+	public float bulletDamage = 10.0f;
+	public float reloadTime = 1;
+	public float shootKickback = 2.0f;
+	
 	protected Animator animator;
 	protected List<GameObject> bullets;
-
+	
 	protected AudioSource jumpSound, shootSound;
+	
 	// Use this for initialization
 	void Start () {
 		bullets = new List<GameObject> ();
@@ -40,39 +46,44 @@ public class PlayerController : MonoBehaviour {
 	
 	// Control physics based stuff like velocity/position
 	void FixedUpdate () {
+		
+		// if we are rolling, then there should be no movement input
+		bool isRoll = animator.GetBool("isRoll");
+		if (isRoll) return;
+		
 		// Update the x according to horizontal input
 		float dx = Input.GetAxisRaw("Horizontal");
+		Vector3 walkVector = new Vector3 (dx, 0, 0) * walkSpeed * Time.deltaTime;
 		if (Mathf.Abs(dx) > 0) {
-			Vector3 walkVector = new Vector3 (dx, 0, 0) * walkSpeed * Time.deltaTime;
 			if (walkVector.x < 0 && isFacingRight) {
 				flip ();
 			} else if (walkVector.x > 0 && !isFacingRight) {
 				flip ();
 			}
-			animator.SetBool ("isWalk", Mathf.Abs(walkVector.x) > 0);
 			transform.position += walkVector;
 		}
-
+		animator.SetBool ("isWalk", Mathf.Abs(walkVector.x) > 0);
+		
 		// Update the y accoridng to the vertical input
-		if (Input.GetKey(KeyCode.UpArrow) && rigidbody2D.velocity.y == 0) {
+		if (Input.GetButton("Jump") && rigidbody2D.velocity.y == 0) {
 			jumpSound.Play ();
 			rigidbody2D.AddForce (new Vector2 (0, jumpSpeed), ForceMode2D.Impulse);
 		}
 		animator.SetBool ("isJump", Mathf.Abs(rigidbody2D.velocity.y) >= .5);
-
+		
 	}
-
+	
 	// update non-physics stuff like shooting
 	void Update () {
 		bool isShoot = animator.GetBool("isShoot");
 		if (isShoot) animator.SetBool("isShoot", false);
-
 		
-		if (Input.GetKey (KeyCode.Space) && !isShoot && Time.time - lastShootTime >= reloadTime) {
+		// Shooting
+		if (Input.GetButton("Shoot") && !isShoot && Time.time - lastShootTime >= reloadTime) {
 			shootSound.Play ();
 			animator.SetBool("isShoot", true);
 			lastShootTime = Time.time;
-
+			
 			// TODO set the correct position for the bullet to spawn
 			GameObject go = Instantiate(Resources.Load("Bullet", typeof(GameObject))) as GameObject;
 			BulletController goScript = go.GetComponent<BulletController>();
@@ -81,13 +92,37 @@ public class PlayerController : MonoBehaviour {
 			Vector2 bulletForce = isFacingRight ? Vector2.right * shootSpeed : -Vector2.right * shootSpeed;
 			go.rigidbody2D.AddForce(bulletForce, ForceMode2D.Impulse);
 			bullets.Add (go);
-
+			
 			Vector2 bulletKickbackForce = new Vector2(isFacingRight ? -shootKickback : shootKickback, 0);
 			rigidbody2D.AddForce(bulletKickbackForce, ForceMode2D.Impulse);
+			
+		}
+		
+		// Rolling
+		bool isRoll = animator.GetBool("isRoll");
+		if (Input.GetButton ("Roll") && !isRoll) {
+			animator.SetBool("isRoll", true);
+			rollStartTime = Time.time;
+			lastRollTickTime = rollStartTime;
+			rigidbody2D.AddForce(new Vector2(isFacingRight ? rollSpeed : -rollSpeed, 0), ForceMode2D.Impulse);
+			gameObject.layer = 9;
+		}
+		
+		if (isRoll) {
+			float delta = Time.time - rollStartTime;
 
+			if (delta >= rollTime) {
+				gameObject.layer = 8;				
+				animator.SetBool("isRoll", false);
+				transform.rotation = Quaternion.identity;
+			} else {
+				float percentage = (Time.time - lastRollTickTime) / rollTime;
+				transform.Rotate(0, 0, isFacingRight ? -percentage * 360.0f : percentage * 360.0f);
+				lastRollTickTime = Time.time;
+			}
 		}
 	}
-
+	
 	void OnCollisionEnter2D(Collision2D collision){
 		//print ("collision");
 		if (collision.gameObject.tag == "BasicEnemy") {
@@ -96,8 +131,8 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 	
-
-
+	
+	
 	// flip the player's sprite to walk left & right
 	void flip() {
 		isFacingRight = !isFacingRight;
@@ -106,5 +141,5 @@ public class PlayerController : MonoBehaviour {
 		scalar.x *= -1;
 		transform.localScale = scalar;
 	}
-
+	
 }
