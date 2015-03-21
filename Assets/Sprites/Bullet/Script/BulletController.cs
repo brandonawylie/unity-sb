@@ -23,8 +23,19 @@ public class BulletController : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D collision){
+		print ("collision");
 		if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Environment") {
 			animator.SetBool("isImpact" ,true);
 		}
+	}
+
+	void OnTriggerEnter2D(Collider2D other) {
+		print ("collision");
+
+		if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Environment") {
+			animator.SetBool("isImpact" ,true);
+			rigidbody2D.velocity = Vector2.zero;
+		}
+
 	}
 }
