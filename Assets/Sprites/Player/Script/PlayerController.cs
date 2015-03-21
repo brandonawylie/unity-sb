@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
 	// TODO give hp
 	// TODO make enemy attacks decrement hp
 	// TODO adjust these variables with power ups
+	// TODO fix jumping sfx when stuck underneath platform
 
 	float walkSpeed = 3.0f;
 	float jumpSpeed = 5.0f;
@@ -23,28 +24,36 @@ public class PlayerController : MonoBehaviour {
 
 	protected Animator animator;
 	protected List<GameObject> bullets;
+
+	protected AudioSource jumpSound, shootSound;
+
 	// Use this for initialization
 	void Start () {
 		bullets = new List<GameObject> ();
 		animator = GetComponent<Animator> ();
+		AudioSource[] audioSources = GetComponents<AudioSource>();
+		jumpSound = audioSources[0];
+		shootSound = audioSources[1];
 	}
 	
 	// Control physics based stuff like velocity/position
 	void FixedUpdate () {
 		// Update the x according to horizontal input
 		float dx = Input.GetAxisRaw("Horizontal");
-
-		Vector3 walkVector = new Vector3 (dx, 0, 0) * walkSpeed * Time.deltaTime;
-		if (walkVector.x < 0 && isFacingRight) {
-			flip ();
-		} else if (walkVector.x > 0 && !isFacingRight) {
-			flip ();
+		if (Mathf.Abs(dx) > 0) {
+			Vector3 walkVector = new Vector3 (dx, 0, 0) * walkSpeed * Time.deltaTime;
+			if (walkVector.x < 0 && isFacingRight) {
+				flip ();
+			} else if (walkVector.x > 0 && !isFacingRight) {
+				flip ();
+			}
+			animator.SetBool ("isWalk", Mathf.Abs(walkVector.x) > 0);
+			transform.position += walkVector;
 		}
-		animator.SetBool ("isWalk", Mathf.Abs(walkVector.x) > 0);
-		transform.position += walkVector;
 
 		// Update the y accoridng to the vertical input
 		if (Input.GetKey(KeyCode.UpArrow) && rigidbody2D.velocity.y == 0) {
+			jumpSound.Play ();
 			rigidbody2D.AddForce (new Vector2 (0, jumpSpeed), ForceMode2D.Impulse);
 		}
 		animator.SetBool ("isJump", Mathf.Abs(rigidbody2D.velocity.y) >= .5);
@@ -58,6 +67,7 @@ public class PlayerController : MonoBehaviour {
 
 		
 		if (Input.GetKey (KeyCode.Space) && !isShoot && Time.time - lastShootTime >= shootWaitTime) {
+			shootSound.Play ();
 			animator.SetBool("isShoot", true);
 			lastShootTime = Time.time;
 

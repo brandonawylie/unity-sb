@@ -6,8 +6,10 @@ public class BulletController : MonoBehaviour {
 	protected Animator animator;
 	public float damage = 10.0f;
 
+	protected AudioSource explodeSound;
 	// Use this for initialization
 	void Start () {
+		explodeSound = GetComponent<AudioSource>();
 		animator = GetComponent<Animator> ();
 	}
 	
@@ -36,6 +38,7 @@ public class BulletController : MonoBehaviour {
 		if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Environment") {
 			animator.SetBool("isImpact" ,true);
 			rigidbody2D.velocity = Vector2.zero;
+			explodeSound.Play();
 		}
 
 	}
