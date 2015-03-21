@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
 
 	float lastShootTime = 0;
 	float shootWaitTime = 1;
+	float shootKickback = 2.0f;
 
 	Object bulletPrefab;
 
@@ -63,6 +64,10 @@ public class PlayerController : MonoBehaviour {
 			Vector2 bulletForce = new Vector2(isFacingRight ? shootSpeed : -shootSpeed, 0);
 			go.rigidbody2D.AddForce(bulletForce, ForceMode2D.Impulse);
 			bullets.Add (go);
+
+			Vector2 bulletKickbackForce = new Vector2(isFacingRight ? -shootKickback : shootKickback, 0);
+			rigidbody2D.AddForce(bulletKickbackForce, ForceMode2D.Impulse);
+
 		}
 	}
 
