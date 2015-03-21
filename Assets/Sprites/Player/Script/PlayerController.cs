@@ -14,19 +14,21 @@ public class PlayerController : MonoBehaviour {
 	float jumpSpeed = 5.0f;
 	float shootSpeed = 3.0f;
 
+	public float hp = 100;
+	public float maxHP = 100;
+
 	float bulletDamage = 10.0f;
 
 	bool isFacingRight = true;
 
 	float lastShootTime = 0;
-	float shootWaitTime = 1;
+	float reloadTime = 1;
 	float shootKickback = 2.0f;
 
 	protected Animator animator;
 	protected List<GameObject> bullets;
 
 	protected AudioSource jumpSound, shootSound;
-
 	// Use this for initialization
 	void Start () {
 		bullets = new List<GameObject> ();
@@ -66,7 +68,7 @@ public class PlayerController : MonoBehaviour {
 		if (isShoot) animator.SetBool("isShoot", false);
 
 		
-		if (Input.GetKey (KeyCode.Space) && !isShoot && Time.time - lastShootTime >= shootWaitTime) {
+		if (Input.GetKey (KeyCode.Space) && !isShoot && Time.time - lastShootTime >= reloadTime) {
 			shootSound.Play ();
 			animator.SetBool("isShoot", true);
 			lastShootTime = Time.time;
@@ -85,6 +87,16 @@ public class PlayerController : MonoBehaviour {
 
 		}
 	}
+
+	void OnCollisionEnter2D(Collision2D collision){
+		//print ("collision");
+		if (collision.gameObject.tag == "BasicEnemy") {
+			hp -= 10;
+			print ("hit");
+		}
+	}
+	
+
 
 	// flip the player's sprite to walk left & right
 	void flip() {

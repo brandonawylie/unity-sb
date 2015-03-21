@@ -1,0 +1,102 @@
+fileFormatVersion: 2
+guid: 4cbdef18bdb4142bc9da46c82f4e762d
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: HealthBar_0
+    21300002: HealthBar_1
+    21300004: HealthBar_2
+    21300006: HealthBar_3
+    21300008: HealthBar_4
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: HealthBar_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 0
+        width: 200
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: HealthBar_1
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 0
+        width: 200
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: HealthBar_2
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 0
+        width: 200
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: HealthBar_3
+      rect:
+        serializedVersion: 2
+        x: 614
+        y: 0
+        width: 200
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: HealthBar_4
+      rect:
+        serializedVersion: 2
+        x: 818
+        y: 0
+        width: 200
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
