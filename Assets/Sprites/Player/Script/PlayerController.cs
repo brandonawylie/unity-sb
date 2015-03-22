@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D collision){
 		//print ("collision");
-		if (collision.gameObject.tag == "BasicEnemy") {
+		if (collision.gameObject.tag == "BasicEnemy" || collision.gameObject.tag == "Enemy") {
 			BasicEnemyController script = collision.gameObject.GetComponent<BasicEnemyController>();
 			hp -= script.damage;
 			hurtSound.Play ();

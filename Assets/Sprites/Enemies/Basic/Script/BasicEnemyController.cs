@@ -4,9 +4,16 @@ using System.Collections;
 public class BasicEnemyController : MonoBehaviour {
 	string[] powerupList = {"Powerup_Health", "Powerup_Damage", "Powerup_Reload", "Powerup_Speed"};
 
-	float hp = 10.0f;
+	public float hp = 10.0f;
 
 	public float damage = 1.0f;
+	public float dyingScaleX = 1;
+	public float dyingScaleY = 1;
+	public float dyingOffsetX = 0;
+	public float dyingOffsetY = 0.4f;
+
+	public float upgradeOffsetX = 0;
+	public float upgradeOffsetY = -0.1f;
 
 	Animator animator;
 
@@ -28,8 +35,8 @@ public class BasicEnemyController : MonoBehaviour {
 			GetComponent<Collider2D>().enabled = false;
 			GetComponent<Rigidbody2D>().gravityScale = 0;
 			animator.SetBool("isDying", true);
-			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + .4f,transform.localPosition.z);
-			transform.localScale = new Vector3(1,1,1);
+			transform.localPosition = new Vector3(transform.localPosition.x + dyingOffsetX, transform.localPosition.y + dyingOffsetY,transform.localPosition.z);
+			transform.localScale = new Vector3(dyingScaleX,dyingScaleY,1);
 
 			// TODO roll for a chance of each powerup
 			// 1. roll for whether a powerup spawns
@@ -38,7 +45,7 @@ public class BasicEnemyController : MonoBehaviour {
 			string resource = powerupList[Random.Range (0, powerupList.Length)];
 			GameObject go = Instantiate(Resources.Load(resource, typeof(GameObject))) as GameObject;
 			go.transform.position = transform.position;
-			go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y - .1f,go.transform.localPosition.z);
+			go.transform.localPosition = new Vector3(go.transform.localPosition.x + upgradeOffsetX, go.transform.localPosition.y + upgradeOffsetY,go.transform.localPosition.z);
 		}
 
 		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Graveyard")) {

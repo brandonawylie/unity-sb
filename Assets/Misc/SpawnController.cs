@@ -10,7 +10,7 @@ public class SpawnController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKey(KeyCode.S)) {
+		if (Input.GetKeyUp(KeyCode.S)) {
 			GameObject go = Instantiate(Resources.Load("BasicEnemy", typeof(GameObject))) as GameObject;
 			//BulletController goScript = go.GetComponent<BulletController>();
 			//goScript.damage = bulletDamage;
