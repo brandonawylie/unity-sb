@@ -31,6 +31,13 @@ public class PlayerController : MonoBehaviour {
 	protected List<GameObject> bullets;
 	
 	protected AudioSource jumpSound, shootSound, hurtSound, powerupSound, rollSound;
+	private bool onLadder;
+	
+	// Saved since there are cases where we want to turn gravity off (e.g. climbing ladders). This is the value to return the gravityScale to.
+	private float gravityScale;
+	
+	// Is the character on the ground or not.
+	private bool isGrounded;
 	
 	// Use this for initialization
 	void Start () {
@@ -42,6 +49,9 @@ public class PlayerController : MonoBehaviour {
 		hurtSound = audioSources[2];
 		powerupSound = audioSources[3];
 		rollSound = audioSources[4];
+		onLadder = false;
+		gravityScale = this.GetComponent<Rigidbody2D>().gravityScale;
+		isGrounded = false;
 	}
 	
 	// Control physics based stuff like velocity/position
@@ -49,7 +59,7 @@ public class PlayerController : MonoBehaviour {
 		
 		// if we are rolling, then there should be no movement input
 		bool isRoll = animator.GetBool("isRoll");
-		if (isRoll) return;
+		if (isRoll || !isGrounded && onLadder) return;
 		
 		// Update the x according to horizontal input
 		float dx = Input.GetAxisRaw("Horizontal");
@@ -122,6 +132,17 @@ public class PlayerController : MonoBehaviour {
 				lastRollTickTime = Time.time;
 			}
 		}
+
+		if (onLadder) {
+			float dy = 0;
+			if (Input.GetKey ("up")) {
+				dy = 1;
+			} else if (Input.GetKey ("down")) {
+				dy = -1;
+			}
+			Vector3 climbVector = new Vector3 (0, dy, 0) * walkSpeed * Time.deltaTime;
+			transform.position += climbVector;
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D collision){
@@ -151,6 +172,45 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	void OnCollisionStay2D(Collision2D collision) {
+		string tag = collision.gameObject.tag;
+		BoxCollider2D playerCollider = this.gameObject.GetComponent<BoxCollider2D> ();
+		if (tag == "LadderPlatform" && onLadder) {
+			playerCollider.isTrigger = true;
+		} else if (tag == "LadderPlatform" && !onLadder) {
+			playerCollider.isTrigger = false;
+		}
+	}
+	
+	void OnCollisionExit2D(Collision2D collision) {
+		
+		// Do this here too in case it doesn't catch it in OnCollisionStay2D
+		if (collision.gameObject.tag == "LadderPlatform") {
+			this.gameObject.GetComponent<BoxCollider2D> ().isTrigger = false;
+		}
+	}
+	
+	void OnTriggerEnter2D(Collider2D trigger) {
+		if (trigger.gameObject.tag == "Ladder") {
+			onLadder = true;
+			this.GetComponent<Rigidbody2D>().gravityScale = 0;
+		}
+		
+		if (trigger.gameObject.tag == "Environment" || trigger.gameObject.tag == "LadderPlatform") {
+			isGrounded = true;
+		}
+	}
+	
+	void OnTriggerExit2D(Collider2D trigger) {
+		if (trigger.gameObject.tag == "Ladder") {
+			onLadder = false;
+			this.GetComponent<Rigidbody2D>().gravityScale = gravityScale;
+		}
+		
+		if (trigger.gameObject.tag == "Environment"  || trigger.gameObject.tag == "LadderPlatform") {
+			isGrounded = false;
+		}
+	}
 	
 	// flip the player's sprite to walk left & right
 	void flip() {
