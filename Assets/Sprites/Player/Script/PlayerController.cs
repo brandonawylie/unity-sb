@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour {
 		animator.SetBool ("isWalk", Mathf.Abs(walkVector.x) > 0);
 		
 		// Update the y accoridng to the vertical input
-		if (Input.GetButton("Jump") && GetComponent<Rigidbody2D>().velocity.y == 0) {
+		if (!onLadder && Input.GetButton("Jump") && GetComponent<Rigidbody2D>().velocity.y == 0) {
 			jumpSound.Play ();
 			GetComponent<Rigidbody2D>().AddForce (new Vector2 (0, jumpSpeed), ForceMode2D.Impulse);
 		}
@@ -177,16 +177,6 @@ public class PlayerController : MonoBehaviour {
 		BoxCollider2D playerCollider = this.gameObject.GetComponent<BoxCollider2D> ();
 		if (tag == "LadderPlatform" && onLadder) {
 			playerCollider.isTrigger = true;
-		} else if (tag == "LadderPlatform" && !onLadder) {
-			playerCollider.isTrigger = false;
-		}
-	}
-	
-	void OnCollisionExit2D(Collision2D collision) {
-		
-		// Do this here too in case it doesn't catch it in OnCollisionStay2D
-		if (collision.gameObject.tag == "LadderPlatform") {
-			this.gameObject.GetComponent<BoxCollider2D> ().isTrigger = false;
 		}
 	}
 	
@@ -198,6 +188,7 @@ public class PlayerController : MonoBehaviour {
 		
 		if (trigger.gameObject.tag == "Environment" || trigger.gameObject.tag == "LadderPlatform") {
 			isGrounded = true;
+			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
 		}
 	}
 	
@@ -205,6 +196,7 @@ public class PlayerController : MonoBehaviour {
 		if (trigger.gameObject.tag == "Ladder") {
 			onLadder = false;
 			this.GetComponent<Rigidbody2D>().gravityScale = gravityScale;
+			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
 		}
 		
 		if (trigger.gameObject.tag == "Environment"  || trigger.gameObject.tag == "LadderPlatform") {
