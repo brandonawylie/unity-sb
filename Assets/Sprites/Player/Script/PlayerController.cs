@@ -38,9 +38,6 @@ public class PlayerController : MonoBehaviour {
 	
 	// Is the character on the ground or not.
 	private bool isGrounded;
-
-	// Boolean for whether we collided with a LadderPlatform or not.
-	private bool onALadderPlatform;
 	
 	// Use this for initialization
 	void Start () {
@@ -55,7 +52,6 @@ public class PlayerController : MonoBehaviour {
 		onLadder = false;
 		gravityScale = this.GetComponent<Rigidbody2D>().gravityScale;
 		isGrounded = false;
-		onALadderPlatform = false;
 	}
 	
 	// Control physics based stuff like velocity/position
@@ -63,7 +59,7 @@ public class PlayerController : MonoBehaviour {
 		
 		// if we are rolling, then there should be no movement input
 		bool isRoll = animator.GetBool("isRoll");
-		if (isRoll || !isGrounded && onLadder) return;
+		if (isRoll) return;
 		
 		// Update the x according to horizontal input
 		float dx = Input.GetAxisRaw("Horizontal");
@@ -141,7 +137,7 @@ public class PlayerController : MonoBehaviour {
 			float dy = 0;
 			if (Input.GetKey ("up")) {
 				dy = 1;
-			} else if (Input.GetKey ("down") && ((isGrounded && onALadderPlatform)|| !isGrounded)) {
+			} else if (Input.GetKey ("down")) {
 				dy = -1;
 			}
 			Vector3 climbVector = new Vector3 (0, dy, 0) * walkSpeed * Time.deltaTime;
@@ -174,10 +170,6 @@ public class PlayerController : MonoBehaviour {
 			Destroy(collision.gameObject);
 			
 		}
-
-		if (collision.gameObject.tag == "LadderPlatform") {
-			onALadderPlatform = true;
-		}
 	}
 
 	void OnCollisionStay2D(Collision2D collision) {
@@ -187,33 +179,29 @@ public class PlayerController : MonoBehaviour {
 			playerCollider.isTrigger = true;
 		}
 	}
-
-	void OnCollisionExit2D(Collision2D collision) {
-		if (collision.gameObject.tag == "LadderPlatform") {
-			onALadderPlatform = false;
-		}
-	}
 	
 	void OnTriggerEnter2D(Collider2D trigger) {
-		if (trigger.gameObject.tag == "Ladder") {
+		string tag = trigger.gameObject.tag;
+		if (tag == "Ladder") {
 			onLadder = true;
 			this.GetComponent<Rigidbody2D>().gravityScale = 0;
 		}
 		
-		if (trigger.gameObject.tag == "Environment" || trigger.gameObject.tag == "LadderPlatform") {
+		if (tag == "Environment" || tag == "LadderPlatform") {
 			isGrounded = true;
 			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
 		}
 	}
 	
 	void OnTriggerExit2D(Collider2D trigger) {
-		if (trigger.gameObject.tag == "Ladder") {
+		string tag = trigger.gameObject.tag;
+		if (tag == "Ladder") {
 			onLadder = false;
 			this.GetComponent<Rigidbody2D>().gravityScale = gravityScale;
 			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
 		}
 		
-		if (trigger.gameObject.tag == "Environment"  || trigger.gameObject.tag == "LadderPlatform") {
+		if (tag == "Environment"  || tag == "LadderPlatform") {
 			isGrounded = false;
 		}
 	}
