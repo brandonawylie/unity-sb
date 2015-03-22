@@ -31,6 +31,16 @@ public class PlayerController : MonoBehaviour {
 	protected List<GameObject> bullets;
 	
 	protected AudioSource jumpSound, shootSound, hurtSound, powerupSound, rollSound;
+	private bool onLadder;
+	
+	// Saved since there are cases where we want to turn gravity off (e.g. climbing ladders). This is the value to return the gravityScale to.
+	private float gravityScale;
+	
+	// Is the character on the ground or not.
+	private bool isGrounded;
+
+	// Boolean for whether we collided with a LadderPlatform or not.
+	private bool onALadderPlatform;
 	
 	// Use this for initialization
 	void Start () {
@@ -42,6 +52,10 @@ public class PlayerController : MonoBehaviour {
 		hurtSound = audioSources[2];
 		powerupSound = audioSources[3];
 		rollSound = audioSources[4];
+		onLadder = false;
+		gravityScale = this.GetComponent<Rigidbody2D>().gravityScale;
+		isGrounded = false;
+		onALadderPlatform = false;
 	}
 	
 	// Control physics based stuff like velocity/position
@@ -49,7 +63,7 @@ public class PlayerController : MonoBehaviour {
 		
 		// if we are rolling, then there should be no movement input
 		bool isRoll = animator.GetBool("isRoll");
-		if (isRoll) return;
+		if (isRoll || !isGrounded && onLadder) return;
 		
 		// Update the x according to horizontal input
 		float dx = Input.GetAxisRaw("Horizontal");
@@ -65,11 +79,11 @@ public class PlayerController : MonoBehaviour {
 		animator.SetBool ("isWalk", Mathf.Abs(walkVector.x) > 0);
 		
 		// Update the y accoridng to the vertical input
-		if (Input.GetButton("Jump") && rigidbody2D.velocity.y == 0) {
+		if (!onLadder && Input.GetButton("Jump") && GetComponent<Rigidbody2D>().velocity.y == 0) {
 			jumpSound.Play ();
-			rigidbody2D.AddForce (new Vector2 (0, jumpSpeed), ForceMode2D.Impulse);
+			GetComponent<Rigidbody2D>().AddForce (new Vector2 (0, jumpSpeed), ForceMode2D.Impulse);
 		}
-		animator.SetBool ("isJump", Mathf.Abs(rigidbody2D.velocity.y) >= .5);
+		animator.SetBool ("isJump", Mathf.Abs(GetComponent<Rigidbody2D>().velocity.y) >= .5);
 		
 	}
 	
@@ -90,11 +104,11 @@ public class PlayerController : MonoBehaviour {
 			goScript.damage = bulletDamage;
 			go.transform.position = transform.position;
 			Vector2 bulletForce = isFacingRight ? Vector2.right * shootSpeed : -Vector2.right * shootSpeed;
-			go.rigidbody2D.AddForce(bulletForce, ForceMode2D.Impulse);
+			go.GetComponent<Rigidbody2D>().AddForce(bulletForce, ForceMode2D.Impulse);
 			bullets.Add (go);
 			
 			Vector2 bulletKickbackForce = new Vector2(isFacingRight ? -shootKickback : shootKickback, 0);
-			rigidbody2D.AddForce(bulletKickbackForce, ForceMode2D.Impulse);
+			GetComponent<Rigidbody2D>().AddForce(bulletKickbackForce, ForceMode2D.Impulse);
 			
 		}
 		
@@ -121,6 +135,17 @@ public class PlayerController : MonoBehaviour {
 				transform.Rotate(0, 0, isFacingRight ? -percentage * 360.0f : percentage * 360.0f);
 				lastRollTickTime = Time.time;
 			}
+		}
+
+		if (onLadder) {
+			float dy = 0;
+			if (Input.GetKey ("up")) {
+				dy = 1;
+			} else if (Input.GetKey ("down") && ((isGrounded && onALadderPlatform)|| !isGrounded)) {
+				dy = -1;
+			}
+			Vector3 climbVector = new Vector3 (0, dy, 0) * walkSpeed * Time.deltaTime;
+			transform.position += climbVector;
 		}
 	}
 
@@ -149,8 +174,49 @@ public class PlayerController : MonoBehaviour {
 			Destroy(collision.gameObject);
 			
 		}
+
+		if (collision.gameObject.tag == "LadderPlatform") {
+			onALadderPlatform = true;
+		}
 	}
 
+	void OnCollisionStay2D(Collision2D collision) {
+		string tag = collision.gameObject.tag;
+		BoxCollider2D playerCollider = this.gameObject.GetComponent<BoxCollider2D> ();
+		if (tag == "LadderPlatform" && onLadder) {
+			playerCollider.isTrigger = true;
+		}
+	}
+
+	void OnCollisionExit2D(Collision2D collision) {
+		if (collision.gameObject.tag == "LadderPlatform") {
+			onALadderPlatform = false;
+		}
+	}
+	
+	void OnTriggerEnter2D(Collider2D trigger) {
+		if (trigger.gameObject.tag == "Ladder") {
+			onLadder = true;
+			this.GetComponent<Rigidbody2D>().gravityScale = 0;
+		}
+		
+		if (trigger.gameObject.tag == "Environment" || trigger.gameObject.tag == "LadderPlatform") {
+			isGrounded = true;
+			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
+		}
+	}
+	
+	void OnTriggerExit2D(Collider2D trigger) {
+		if (trigger.gameObject.tag == "Ladder") {
+			onLadder = false;
+			this.GetComponent<Rigidbody2D>().gravityScale = gravityScale;
+			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
+		}
+		
+		if (trigger.gameObject.tag == "Environment"  || trigger.gameObject.tag == "LadderPlatform") {
+			isGrounded = false;
+		}
+	}
 	
 	// flip the player's sprite to walk left & right
 	void flip() {
