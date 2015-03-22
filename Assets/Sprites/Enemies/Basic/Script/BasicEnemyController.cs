@@ -24,9 +24,9 @@ public class BasicEnemyController : MonoBehaviour {
 		if (hp <= 0 && !isDying) {
 			//collider2D.isTrigger = true;
 			//collider.enabled = false;
-			rigidbody2D.isKinematic = true;
-			collider2D.enabled = false;
-			rigidbody2D.gravityScale = 0;
+			GetComponent<Rigidbody2D>().isKinematic = true;
+			GetComponent<Collider2D>().enabled = false;
+			GetComponent<Rigidbody2D>().gravityScale = 0;
 			animator.SetBool("isDying", true);
 			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + .4f,transform.localPosition.z);
 			transform.localScale = new Vector3(1,1,1);

@@ -75,11 +75,11 @@ public class PlayerController : MonoBehaviour {
 		animator.SetBool ("isWalk", Mathf.Abs(walkVector.x) > 0);
 		
 		// Update the y accoridng to the vertical input
-		if (Input.GetButton("Jump") && rigidbody2D.velocity.y == 0) {
+		if (Input.GetButton("Jump") && GetComponent<Rigidbody2D>().velocity.y == 0) {
 			jumpSound.Play ();
-			rigidbody2D.AddForce (new Vector2 (0, jumpSpeed), ForceMode2D.Impulse);
+			GetComponent<Rigidbody2D>().AddForce (new Vector2 (0, jumpSpeed), ForceMode2D.Impulse);
 		}
-		animator.SetBool ("isJump", Mathf.Abs(rigidbody2D.velocity.y) >= .5);
+		animator.SetBool ("isJump", Mathf.Abs(GetComponent<Rigidbody2D>().velocity.y) >= .5);
 		
 	}
 	
@@ -100,11 +100,11 @@ public class PlayerController : MonoBehaviour {
 			goScript.damage = bulletDamage;
 			go.transform.position = transform.position;
 			Vector2 bulletForce = isFacingRight ? Vector2.right * shootSpeed : -Vector2.right * shootSpeed;
-			go.rigidbody2D.AddForce(bulletForce, ForceMode2D.Impulse);
+			go.GetComponent<Rigidbody2D>().AddForce(bulletForce, ForceMode2D.Impulse);
 			bullets.Add (go);
 			
 			Vector2 bulletKickbackForce = new Vector2(isFacingRight ? -shootKickback : shootKickback, 0);
-			rigidbody2D.AddForce(bulletKickbackForce, ForceMode2D.Impulse);
+			GetComponent<Rigidbody2D>().AddForce(bulletKickbackForce, ForceMode2D.Impulse);
 			
 		}
 		

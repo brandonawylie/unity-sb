@@ -20,7 +20,7 @@ public class BulletController : MonoBehaviour {
 			Destroy(gameObject);
 		}
 
-		if (!renderer.isVisible) {
+		if (!GetComponent<Renderer>().isVisible) {
 			Destroy(gameObject);
 		}
 	}
@@ -38,9 +38,9 @@ public class BulletController : MonoBehaviour {
 
 		if (other.gameObject.tag == "BasicEnemy" || other.gameObject.tag == "Environment") {
 			animator.SetBool("isImpact" ,true);
-			rigidbody2D.velocity = Vector2.zero;
+			GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 			explodeSound.Play();
-			collider2D.enabled = false;
+			GetComponent<Collider2D>().enabled = false;
 		}
 
 	}
