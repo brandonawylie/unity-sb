@@ -106,8 +106,6 @@ public class PlayerController : MonoBehaviour {
 			lastRollTickTime = rollStartTime;
 			rigidbody2D.AddForce(new Vector2(isFacingRight ? rollSpeed : -rollSpeed, 0), ForceMode2D.Impulse);
 			gameObject.layer = 10;
-
-			flashPlayer();
 		}
 		
 		if (isRoll) {
@@ -125,13 +123,6 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	IEnumerator flashPlayer() {
-		Color tmp = renderer.material.color;
-		renderer.material.color = Color.white;
-		yield return new WaitForSeconds (.1f);
-		renderer.material.color = tmp;
-	}
-	
 	void OnCollisionEnter2D(Collision2D collision){
 		//print ("collision");
 		if (collision.gameObject.tag == "BasicEnemy") {

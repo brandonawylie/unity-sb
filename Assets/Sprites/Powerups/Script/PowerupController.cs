@@ -24,6 +24,8 @@ public class PowerupController : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D collision){
 		//print ("collision");
+		// TODO get velocity on impact
+		// TODO scale sound occording to the velocity on impact
 		if (collision.gameObject.layer == 0) {
 			bounceSound.Play();
 		}
