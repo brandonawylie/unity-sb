@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 	// TODO make controls more responsive
 	// TODO fix jumping sfx when stuck underneath platform
 
+	static float MAX_SPEED = 5.0f;
 	float walkSpeed = 3.0f;
 	float jumpSpeed = 5.0f;
 	float shootSpeed = 3.0f;
@@ -17,7 +18,7 @@ public class PlayerController : MonoBehaviour {
 	float rollStartTime = 0;
 	float lastRollTickTime = 0;
 	float rollTime = .5f;
-	float rollSpeed = 4;
+	float rollSpeed = 200.0f;
 	
 	// Upgradable stats
 	public float hp = 100;
@@ -104,7 +105,7 @@ public class PlayerController : MonoBehaviour {
 			animator.SetBool("isRoll", true);
 			rollStartTime = Time.time;
 			lastRollTickTime = rollStartTime;
-			rigidbody2D.AddForce(new Vector2(isFacingRight ? rollSpeed : -rollSpeed, 0), ForceMode2D.Impulse);
+			rigidbody2D.AddForce(new Vector2(isFacingRight ? rollSpeed : -rollSpeed, 0), ForceMode2D.Force);
 			gameObject.layer = 10;
 		}
 		
@@ -141,6 +142,8 @@ public class PlayerController : MonoBehaviour {
 				bulletDamage += otherScript.damageIncrease;
 			} else if(type == "Reload") {
 				reloadTime -= otherScript.reloadReduction;
+			} else if(type == "Speed") {
+				walkSpeed = Mathf.Clamp(walkSpeed + otherScript.speedIncrease, 0, MAX_SPEED);
 			}
 			
 			Destroy(collision.gameObject);

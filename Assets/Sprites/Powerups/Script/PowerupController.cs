@@ -7,6 +7,7 @@ public class PowerupController : MonoBehaviour {
 	public int healAmount = 10;
 	public float reloadReduction = .5f;
 	public float damageIncrease = 1;
+	public float speedIncrease = 1;
 
 	float rotationCoeff = .05f;
 

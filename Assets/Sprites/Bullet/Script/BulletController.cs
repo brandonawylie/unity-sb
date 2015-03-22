@@ -29,6 +29,7 @@ public class BulletController : MonoBehaviour {
 		//print ("collision");
 		if (collision.gameObject.tag == "BasicEnemy" || collision.gameObject.tag == "Environment") {
 			animator.SetBool("isImpact" ,true);
+			gameObject.layer = 1;
 		}
 	}
 

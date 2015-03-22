@@ -2,10 +2,10 @@
 using System.Collections;
 
 public class BasicEnemyController : MonoBehaviour {
-	string[] powerupList = {"Powerup_Health", "Powerup_Damage", "Powerup_Reload"};
+	string[] powerupList = {"Powerup_Health", "Powerup_Damage", "Powerup_Reload", "Powerup_Speed"};
 
 	float hp = 10.0f;
-	float walkSpeed = 1.0f;
+
 	public float damage = 1.0f;
 
 	Animator animator;
@@ -43,16 +43,8 @@ public class BasicEnemyController : MonoBehaviour {
 			Destroy(gameObject);
 		}
 
-		// AI
-		// Move towards player
-		// TODO have zones where teh enemies potrol
-		// TODO if player is close, then  use this within zones
-		Vector3 toPlayer = playerGameObject.transform.position - transform.position;
-		toPlayer.Normalize();
-		Vector3 walkVector = new Vector3 (toPlayer.x, 0, 0) * walkSpeed * Time.deltaTime;
-		transform.position += walkVector;
-
 	}
+
 
 	void OnTriggerEnter2D(Collider2D other) {		
 		if (other.gameObject.tag == "PlayerBullet") {
