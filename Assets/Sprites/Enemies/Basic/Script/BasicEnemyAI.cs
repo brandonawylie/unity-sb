@@ -33,7 +33,6 @@ public class BasicEnemyAI : MonoBehaviour {
 			transform.position += chaseVector;
 		} else {
 			Vector3 patrolVector = direction * patrolSpeed * Time.deltaTime;
-			//print (patrolVector);
 			transform.position += patrolVector;
 		}
 	}

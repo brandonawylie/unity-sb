@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour {
 	float rollStartTime = 0;
 	float lastRollTickTime = 0;
 	float rollTime = .5f;
-	float rollSpeed = 200.0f;
+	float rollSpeed = 5.0f;
 	
 	// Upgradable stats
 	public float hp = 100;
@@ -105,13 +105,13 @@ public class PlayerController : MonoBehaviour {
 			animator.SetBool("isRoll", true);
 			rollStartTime = Time.time;
 			lastRollTickTime = rollStartTime;
-			rigidbody2D.AddForce(new Vector2(isFacingRight ? rollSpeed : -rollSpeed, 0), ForceMode2D.Force);
+			//rigidbody2D.AddForce(new Vector2(isFacingRight ? rollSpeed : -rollSpeed, 0), ForceMode2D.Force);
 			gameObject.layer = 10;
 		}
 		
 		if (isRoll) {
 			float delta = Time.time - rollStartTime;
-
+			transform.position += new Vector3(isFacingRight ? Time.deltaTime * rollSpeed : -Time.deltaTime * rollSpeed, 0, 0);
 			if (delta >= rollTime) {
 				gameObject.layer = 9;				
 				animator.SetBool("isRoll", false);
