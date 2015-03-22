@@ -5,6 +5,11 @@ public class CameraController : MonoBehaviour {
 	public float damp_time = 0.15f;
 	private Vector3 velocity = Vector3.zero;
 	public Transform target;
+
+	void Awake() {
+		Application.targetFrameRate = 75;
+	}
+
 	// Use this for initialization
 	void Start () {
 		target = GameObject.FindGameObjectWithTag("Player").transform;
