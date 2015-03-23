@@ -38,8 +38,6 @@ public class FlyingMonsterAI : MonoBehaviour {
 				} else {
 					isFacingRight = false;
 				}
-				print ("distanceFromStart (should be half of patrolDiameter: " + distanceFromStart);
-				print ("isFacingRight :" + isFacingRight);
 				// TODO: Actually get monster to chase. Also do attack animation on contact (obviously in OnCollisionEnter2D() 
 			} else {
 				if ((isFacingRight && distanceFromStart < patrolDiameter) || 
