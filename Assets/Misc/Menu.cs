@@ -51,14 +51,12 @@ public class Menu : MonoBehaviour {
 			{
 				GameObject button = Instantiate(Resources.Load("Menu_Button", typeof(GameObject))) as GameObject;
 				button.transform.SetParent(levelSelection.transform, false);
-				RectTransform t = button.GetComponent<RectTransform>();
-				t.anchorMax = new Vector2(t.anchorMax.x, t.anchorMax.y -0.15f * i);
-				t.anchorMin = new Vector2(t.anchorMin.x, t.anchorMin.y -0.15f * i);
 				button.GetComponentInChildren<Text>().text = file;
 				button.GetComponent<Button>().onClick.AddListener(() => { Application.LoadLevel(file.Replace(".unity","")); });
 				i++;
 			}
 		}
+		GameObject.Find("Level_Select_Scrollbar").GetComponent<Scrollbar>().value = 1;
 		levelSelectMenu.SetActive(false);
 	}
 	
