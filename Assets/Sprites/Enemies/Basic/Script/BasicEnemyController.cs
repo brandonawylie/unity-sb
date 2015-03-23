@@ -59,6 +59,10 @@ public class BasicEnemyController : MonoBehaviour {
 		if (other.gameObject.tag == "PlayerBullet") {
 			BulletController otherScript = other.GetComponent<BulletController>();
 			hp -= otherScript.damage;
+			Vector3 distance = other.gameObject.transform.position - transform.position;
+			distance.Normalize();
+
+			GetComponent<Rigidbody2D>().AddForce(distance, ForceMode2D.Impulse);
 		}
 		
 	}

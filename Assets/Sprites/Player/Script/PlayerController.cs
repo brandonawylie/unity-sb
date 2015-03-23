@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour {
 		animator.SetBool ("isWalk", Mathf.Abs(walkVector.x) > 0);
 		
 		// Update the y accoridng to the vertical input
-		if (!onLadder && Input.GetButton("Jump") && GetComponent<Rigidbody2D>().velocity.y == 0) {
+		if (!onLadder && Input.GetButton("Jump") && GetComponent<Rigidbody2D>().velocity.y == 0 && isGrounded) {
 			jumpSound.Play ();
 			GetComponent<Rigidbody2D>().AddForce (new Vector2 (0, jumpSpeed), ForceMode2D.Impulse);
 		}
