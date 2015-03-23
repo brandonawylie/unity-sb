@@ -36,9 +36,6 @@ public class PlayerController : MonoBehaviour {
 	// Saved since there are cases where we want to turn gravity off (e.g. climbing ladders). This is the value to return the gravityScale to.
 	private float gravityScale;
 	
-	// Is the character on the ground or not.
-	private bool isGrounded;
-	
 	// Use this for initialization
 	void Start () {
 		bullets = new List<GameObject> ();
@@ -51,7 +48,6 @@ public class PlayerController : MonoBehaviour {
 		rollSound = audioSources[4];
 		onLadder = false;
 		gravityScale = this.GetComponent<Rigidbody2D>().gravityScale;
-		isGrounded = false;
 	}
 	
 	// Control physics based stuff like velocity/position
@@ -188,7 +184,6 @@ public class PlayerController : MonoBehaviour {
 		}
 		
 		if (tag == "Environment" || tag == "LadderPlatform") {
-			isGrounded = true;
 			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
 		}
 	}
@@ -199,10 +194,6 @@ public class PlayerController : MonoBehaviour {
 			onLadder = false;
 			this.GetComponent<Rigidbody2D>().gravityScale = gravityScale;
 			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
-		}
-		
-		if (tag == "Environment"  || tag == "LadderPlatform") {
-			isGrounded = false;
 		}
 	}
 	
