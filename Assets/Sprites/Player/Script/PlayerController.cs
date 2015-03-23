@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
 	
 	protected AudioSource jumpSound, shootSound, hurtSound, powerupSound, rollSound;
 	private bool onLadder;
+	private bool isGrounded = false;
 	
 	// Saved since there are cases where we want to turn gravity off (e.g. climbing ladders). This is the value to return the gravityScale to.
 	private float gravityScale;
@@ -81,6 +82,8 @@ public class PlayerController : MonoBehaviour {
 	
 	// update non-physics stuff like shooting
 	void Update () {
+		RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), -Vector2.up, GetComponent<Collider2D>().bounds.extents.y + 0.1f, 1);
+		isGrounded = hit.collider != null;
 		bool isShoot = animator.GetBool("isShoot");
 		if (isShoot) animator.SetBool("isShoot", false);
 		
