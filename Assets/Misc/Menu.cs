@@ -15,6 +15,8 @@ public class Menu : MonoBehaviour {
 
 	// Level Select
 	GameObject levelSelectMenu;
+	GameObject levelSelection;
+	GameObject backButtonLevel;
 	
 
 	// Use this for initialization
@@ -34,6 +36,10 @@ public class Menu : MonoBehaviour {
 
 		// Level Select Menu
 		levelSelectMenu = GameObject.Find("Level_Select_Menu");
+		levelSelection = GameObject.Find ("Level_Selection");
+		backButtonLevel = GameObject.Find ("Back_Button_Level");
+		backButtonLevel.GetComponent<Button>().onClick.AddListener(() => { OnBackButtonLevelClick(); });
+
 		string myPath = Application.dataPath;
 		//string levelsPath = assetsPath.Substring(0,myPath.LastIndexOf('/')) + "/levels";
 		string[] files;
@@ -44,16 +50,16 @@ public class Menu : MonoBehaviour {
 			if(file.EndsWith(".unity"))
 			{
 				GameObject button = Instantiate(Resources.Load("Menu_Button", typeof(GameObject))) as GameObject;
-				button.transform.SetParent(levelSelectMenu.transform, false);
+				button.transform.SetParent(levelSelection.transform, false);
 				RectTransform t = button.GetComponent<RectTransform>();
-				button.GetComponent<RectTransform>().anchorMax = new Vector2(button.GetComponent<RectTransform>().anchorMax.x, button.GetComponent<RectTransform>().anchorMax.y -0.15f * i);
-				button.GetComponent<RectTransform>().anchorMin = new Vector2(button.GetComponent<RectTransform>().anchorMin.x, button.GetComponent<RectTransform>().anchorMin.y -0.15f * i);
+				t.anchorMax = new Vector2(t.anchorMax.x, t.anchorMax.y -0.15f * i);
+				t.anchorMin = new Vector2(t.anchorMin.x, t.anchorMin.y -0.15f * i);
 				button.GetComponentInChildren<Text>().text = file;
 				button.GetComponent<Button>().onClick.AddListener(() => { Application.LoadLevel(file.Replace(".unity","")); });
 				i++;
 			}
 		}
-		levelSelectMenu.GetComponent<Canvas>().enabled = false;
+		levelSelectMenu.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -72,11 +78,16 @@ public class Menu : MonoBehaviour {
 	void OnLevelSelectClick()
 	{
 		print ("Level Select Button Clicked");
-		mainMenu.GetComponent<Canvas>().enabled = false;
-		levelSelectMenu.GetComponent<Canvas>().enabled = true;
+		mainMenu.SetActive(false);
+		levelSelectMenu.SetActive(true);
 	}
 	void OnTutorialClick()
 	{
 		print ("Tutorial Button Clicked");
+	}
+	void OnBackButtonLevelClick()
+	{
+        levelSelectMenu.SetActive(false);
+        mainMenu.SetActive(true);
 	}
 }

@@ -6,8 +6,11 @@ public class CameraController : MonoBehaviour {
 	private Vector3 velocity = Vector3.zero;
 	public Transform target;
 
+	PlayerController player;
+
 	void Awake() {
 		Application.targetFrameRate = 75;
+		player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 	}
 
 	// Use this for initialization
@@ -17,6 +20,11 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		if (player.hp <= 0) {
+			PlayerPrefs.SetString("LastLevel", Application.loadedLevelName);
+			Application.LoadLevel("GameOver");
+		}
+
 		if (target) {
 			Vector3 point = GetComponent<Camera>().WorldToViewportPoint(target.position);
 			Vector3 delta = target.position - GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z)); //(new Vector3(0.5, 0.5, point.z));
