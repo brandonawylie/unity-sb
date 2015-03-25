@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour {
 			menuDisplayed = true;
 			//GameObject go = GameObject.FindGameObjectWithTag("Win");
 			loseMenu.SetActive(true);
-			loseMenu.transform.position = player.transform.position;
+			loseMenu.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 1.0f, player.transform.position.z);
 			loseMenu.transform.FindChild("RestartLevelButton").GetComponent<Button>().onClick.AddListener(() => { onRestartLevelClick(); });
 			loseMenu.transform.FindChild("MainMenuButton").GetComponent<Button>().onClick.AddListener(() => { onMainMenuClick(); });
 
@@ -50,7 +50,7 @@ public class CameraController : MonoBehaviour {
 			menuDisplayed = true;
 			//GameObject go = GameObject.FindGameObjectWithTag("Win");
 			winMenu.SetActive(true);
-			winMenu.transform.position = player.transform.position;
+			winMenu.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 1.0f, player.transform.position.z);
 			winMenu.transform.FindChild("NextLevelButton").GetComponent<Button>().onClick.AddListener(() => { onNextLevelClick(); });
 			winMenu.transform.FindChild("RestartLevelButton").GetComponent<Button>().onClick.AddListener(() => { onRestartLevelClick(); });
 			winMenu.transform.FindChild("MainMenuButton").GetComponent<Button>().onClick.AddListener(() => { onMainMenuClick(); });

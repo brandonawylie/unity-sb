@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour {
 	protected AudioSource jumpSound, shootSound, hurtSound, powerupSound, rollSound;
 	private bool onLadder;
 	private bool isGrounded = false;
+	bool isDead = false;
+	bool rotatedWhenDead = false;
 	
 	// Use this for initialization
 	void Start () {
@@ -78,6 +80,16 @@ public class PlayerController : MonoBehaviour {
 	
 	// update non-physics stuff like shooting
 	void Update () {
+		if (hp <= 0 && !isDead) {
+			isDead = true;
+			animator.SetBool("isDying", true);
+		}
+
+		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Graveyard") && !rotatedWhenDead) {
+			rotatedWhenDead = true;
+			transform.Rotate(0, 0, 90);
+		}
+
 		RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), -Vector2.up, GetComponent<Collider2D>().bounds.extents.y + 0.1f, 1);
 		isGrounded = hit.collider != null;
 		bool isShoot = animator.GetBool("isShoot");
