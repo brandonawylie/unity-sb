@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour {
+	public string[] levels;
 	public float damp_time = 0.15f;
 	private Vector3 velocity = Vector3.zero;
 	public Transform target;
@@ -66,12 +67,14 @@ public class CameraController : MonoBehaviour {
 	}
 
 	void onNextLevelClick() {
-		string level = Application.loadedLevelName;
-		char levelNum = level.ToCharArray()[level.Length - 1];
-		level = level.Substring(level.Length - 1);
-		level += (levelNum + 1);
-		print ("trying to load level " + level);
-		Application.LoadLevel (level);
+		int index = -1;
+		for (int i = 0; i < levels.Length; i++) {
+			if (Application.loadedLevelName.Equals(levels[i])) {
+				index  = i;
+				break;
+			}
+		}
+		Application.LoadLevel(levels[index + 1]);
 	}
 
 	void onRestartLevelClick() {
