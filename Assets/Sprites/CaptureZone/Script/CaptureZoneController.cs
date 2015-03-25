@@ -9,21 +9,40 @@ public class CaptureZoneController : MonoBehaviour {
 
 	bool isPlayerHere = false;
 
+	Animator animator;
+
+	public bool isRaised = false;
+
 	// Use this for initialization
 	void Start () {
+		animator = GetComponent<Animator>();
 		timeLeft = timeToCapture;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if ( timeLeft <= 0) {
-			Destroy(gameObject);
-		}
+		if (!isRaised) {
+			if ( timeLeft <= 0) {
+				animator.SetBool("isRaised", true);
+				isRaised = true;
 
-		if (isPlayerHere) {
-			timeLeft -= Time.deltaTime;
-		} else {
-			timeLeft = Mathf.Clamp(timeLeft + zoneRegenRate, 0, timeToCapture);
+				GameObject[] obs = GameObject.FindGameObjectsWithTag("EnemySpawn");
+				print (obs.Length);
+				foreach (GameObject ob in obs) {
+					SpawnController con = ob.GetComponent<SpawnController>();
+
+					if (GetComponent<BoxCollider2D>().OverlapPoint(new Vector2(con.transform.position.x, con.transform.position.y))) {
+						con.isSpawning = false;
+					}
+				}
+				//Destroy(gameObject);
+			} else {
+				if (isPlayerHere) {
+					timeLeft -= Time.deltaTime;
+				} else {
+					timeLeft = Mathf.Clamp(timeLeft + zoneRegenRate, 0, timeToCapture);
+				}
+			}
 		}
 	}
 

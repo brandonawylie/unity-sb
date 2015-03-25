@@ -54,6 +54,7 @@ public class Spawner : MonoBehaviour {
 			print("selected enemy: " + selectedEnemy);
 		}
 		string enemyToSpawn = dict [selectedEnemy];
+		print ("spawing enemey: " + enemyToSpawn);
 		GameObject spawnedEnemy = Instantiate(Resources.Load(enemyToSpawn, typeof(GameObject))) as GameObject;
 		spawnedEnemy.transform.position = transform.position;
 

@@ -28,7 +28,6 @@ public class SkeleAI : MonoBehaviour {
 	void Update () {
 		RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x + (isFacingRight ? .6f : -.7f), transform.position.y), 
 		                                   isFacingRight ? Vector2.right : -Vector2.right, detectPlayerDistance, 1 << 9);
-		print (hit.collider);
 		if (hit.collider != null && hit.collider.gameObject.tag == "Player") {
 			lastTurnTime = Time.time;
 			transform.position += direction * speed * Time.deltaTime;
@@ -45,7 +44,6 @@ public class SkeleAI : MonoBehaviour {
 
 		// TODO if player is close, then  use this within zones
 		float distance = Vector3.Distance(transform.position, playerGameObject.transform.position);
-		//print (distance);
 		if (distance <= attackDistance) {
 			Vector3 toPlayer = playerGameObject.transform.position - transform.position;
 			toPlayer.Normalize();
