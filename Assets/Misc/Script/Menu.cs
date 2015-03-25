@@ -51,8 +51,9 @@ public class Menu : MonoBehaviour {
 			{
 				GameObject button = Instantiate(Resources.Load("Menu_Button", typeof(GameObject))) as GameObject;
 				button.transform.SetParent(levelSelection.transform, false);
-				button.GetComponentInChildren<Text>().text = file;
-				button.GetComponent<Button>().onClick.AddListener(() => { Application.LoadLevel(file.Replace(".unity","")); });
+				string level = file.Substring(file.LastIndexOf("/") + 1)	;
+				button.GetComponentInChildren<Text>().text = level;
+				button.GetComponent<Button>().onClick.AddListener(() => { Application.LoadLevel(level.Replace(".unity","")); });
 				i++;
 			}
 		}
