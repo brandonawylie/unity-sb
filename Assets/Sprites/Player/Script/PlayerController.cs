@@ -35,6 +35,12 @@ public class PlayerController : MonoBehaviour {
 	private bool isGrounded = false;
 	bool isDead = false;
 	bool rotatedWhenDead = false;
+
+	// The current or most recent ladder being climbed.
+	private GameObject currentLadder;
+
+	// true if the bottom of a ladder was entered. false otherwise or if exited.
+	private bool ladderBottomReached;
 	
 	// Use this for initialization
 	void Start () {
@@ -47,6 +53,8 @@ public class PlayerController : MonoBehaviour {
 		powerupSound = audioSources[3];
 		rollSound = audioSources[4];
 		onLadder = false;
+		currentLadder = null;
+		ladderBottomReached = false;
 	}
 	
 	// Control physics based stuff like velocity/position
@@ -144,7 +152,7 @@ public class PlayerController : MonoBehaviour {
 			float dy = 0;
 			if (Input.GetKey ("up")) {
 				dy = 1;
-			} else if (Input.GetKey ("down")) {
+			} else if (Input.GetKey ("down") && (!ladderBottomReached || !currentLadder.GetComponent<LadderScript>().isBottom)) {
 				dy = -1;
 			}
 			Vector3 climbVector = new Vector3 (0, dy, 0) * walkSpeed * Time.deltaTime;
@@ -189,22 +197,34 @@ public class PlayerController : MonoBehaviour {
 	
 	void OnTriggerEnter2D(Collider2D trigger) {
 		string tag = trigger.gameObject.tag;
-		if (tag == "Ladder") {
+		if (tag == "Ladder" || tag == "LadderTop") {
 			onLadder = true;
 			this.GetComponent<Rigidbody2D>().isKinematic = true;
+
+			if (tag == "Ladder") {
+				currentLadder = trigger.gameObject;
+			}
 		}
-		
-		if (tag == "Environment" || tag == "LadderPlatform") {
+
+		if (tag == "LadderBottom" && currentLadder.GetComponent<LadderScript>().isBottom && currentLadder.GetComponent<LadderScript>().LadderBottom == trigger.gameObject) {
+			ladderBottomReached = true;
+		}
+
+		if ((tag == "Environment" || tag == "LadderPlatform") && (!onLadder || currentLadder.GetComponent<LadderScript>().isBottom)) {
 			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
 		}
 	}
 	
 	void OnTriggerExit2D(Collider2D trigger) {
 		string tag = trigger.gameObject.tag;
-		if (tag == "Ladder") {
+		if (tag == "Ladder" || tag == "LadderTop") {
 			onLadder = false;
 			this.GetComponent<Rigidbody2D>().isKinematic = false;
 			this.gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
+		}
+
+		if (tag == "LadderBottom") {
+			ladderBottomReached = false;
 		}
 	}
 	
